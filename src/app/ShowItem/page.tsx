@@ -21,7 +21,7 @@ export default function ProductPage() {
       minimumFractionDigits: 0
     }).format(amount);
   };
-  const total = formatRupiah(harga * quantity);
+  const total = formatRupiah(hargaNumber * quantity);
 
   return (
 
