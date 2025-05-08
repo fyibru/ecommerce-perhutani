@@ -1,31 +1,27 @@
 'use client'
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function ProductPage() {
   const searchParams = useSearchParams();
-
-  const judul = searchParams.get("judul") || "";
-  const harga = searchParams.get("harga");
-  const pembuat = searchParams.get("pembuat") || "";
-  const whatsApp = searchParams.get("whatsapp") || "";
-  const deskripsi = searchParams.get("deskripsi") || "";
-
+  const judul = searchParams.get('judul');
+  const harga = searchParams.get('harga');
+  const pembuat = searchParams.get('pembuat');
+  const whatsApp = searchParams.get('whatsapp');
+  const deskripsi = searchParams.get('deskripsi')
+  
   const hargaNumber = harga ? parseInt(harga) : 0;
-
   const [quantity, setQuantity] = useState(1);
-
-  const formatRupiah = (amount: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
+  const price = 12000000;
+  const formatRupiah = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
     }).format(amount);
   };
-
-  const total = formatRupiah(hargaNumber * quantity);
+  const total = formatRupiah(harga * quantity);
 
   return (
 
@@ -87,17 +83,17 @@ export default function ProductPage() {
               </div>
               <ul className="py-2 text-sm text-gray-700">
                 <li>
-                  <Link href="#" className="block px-4 py-2 hover:bg-gray-100">Dashboard</Link>
+                  <a href="#" className="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
                 </li>
                 <li>
-                  <Link href="#" className="block px-4 py-2 hover:bg-gray-100">Settings</Link>
+                  <a href="#" className="block px-4 py-2 hover:bg-gray-100">Settings</a>
                 </li>
                 <li>
-                  <Link href="#" className="block px-4 py-2 hover:bg-gray-100">Earnings</Link>
+                  <a href="#" className="block px-4 py-2 hover:bg-gray-100">Earnings</a>
                 </li>
               </ul>
               <div className="py-2">
-                <Link href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</Link>
+                <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
               </div>
             </div>
           </div>
