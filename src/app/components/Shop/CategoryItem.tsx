@@ -21,7 +21,7 @@ export default function CategoryItem({itemName}: {itemName: UserData[]}) {
                 >
                     <a href="#">
                         <img
-                            src={it.imageUrl}
+                            src={String(it.imageUrl)}
                             alt={""}
                             className="w-full h-36 object-cover"
                         />
@@ -31,7 +31,7 @@ export default function CategoryItem({itemName}: {itemName: UserData[]}) {
                         <p className="text-xs text-gray-500 mb-2 truncate">
                             {it.deskripsi || "Deskripsi belum tersedia"}
                         </p>
-                        <p className="text-emerald-600 font-bold text-sm mb-2">{formatRupiah(it.harga)}</p>
+                        <p className="text-emerald-600 font-bold text-sm mb-2">{formatRupiah(Number(it.harga))}</p>
                         <Link href={`/ShowItem?judul=${it.judul}&harga=${it.harga}&deskripsi=${it.deskripsi}&whatsApp=${it.whatsApp}`}>
                         <button className="w-full text-sm bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 rounded-md">
                             Lihat
