@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import  CategoryItem  from "../components/Shop/CategoryItem";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -24,7 +25,7 @@ export type UserData = {
 }
 
 export default function ShopMenu() {
-
+    const router = useRouter()
     const user = auth.currentUser
     // State management
     const [countedChips, setCountedChips] = useState(0);
@@ -56,6 +57,11 @@ export default function ShopMenu() {
     ];
     // Handle click outside dropdown
     useEffect(() => {
+        if (!user){
+            router.push("/Home")
+        }
+
+
         const fetchUser = async () => {
             const querySnapshot = await getDocs(collection(db, "produk"));
             const usersData: UserData[] = []
