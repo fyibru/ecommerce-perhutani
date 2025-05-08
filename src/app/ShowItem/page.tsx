@@ -14,7 +14,7 @@ export default function ProductPage() {
   const hargaNumber = harga ? parseInt(harga) : 0;
   const [quantity, setQuantity] = useState(1);
   const price = 12000000;
-  const formatRupiah = (amount) => {
+  const formatRupiah = (amount: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',

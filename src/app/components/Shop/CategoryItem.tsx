@@ -5,7 +5,7 @@ import Link from "next/link"
 
 
 export default function CategoryItem({itemName}: {itemName: UserData[]}) {
-    const formatRupiah = (amount) => {
+    const formatRupiah = (amount: number) => {
         return new Intl.NumberFormat('id-ID', {
           style: 'currency',
           currency: 'IDR',
