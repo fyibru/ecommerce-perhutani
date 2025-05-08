@@ -13,15 +13,16 @@ import 'swiper/css/pagination';
 import './carousel.css';
 
 export type UserData = {
-    createdAt: String,
-    deskripsi: String,
-    harga: String,
-    imageUrl: String,
-    judul: String,
-    kategori: String,
-    pembuat: String,
-    uid: String,
-    whatsApp: String,
+    createdAt: string,
+    deskripsi: string,
+    harga: string,
+    imageUrl: string,
+    judul: string,
+    kategori: string,
+    stok: number,
+    pembuat: string,
+    uid: string,
+    whatsApp: string,
 }
 
 export default function ShopMenu() {
@@ -163,12 +164,6 @@ export default function ShopMenu() {
                             </div>
                         )}
                     </div>
-                    <Link href="/upload" className="ml-4">
-                        <button className="flex items-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition-all">
-                            <img src="/images/upload.svg" className="w-9 h-5 md:w-5" alt="Upload" />
-                            <span className="hidden sm:inline">Upload Produk</span>
-                        </button>
-                    </Link>
                 </div>
             </header>
 
@@ -257,13 +252,18 @@ export default function ShopMenu() {
                     </div>
 
                     {/* Promo Banner */}
+                    {
                     <div className="bg-emerald-100 p-4 rounded-lg text-center shadow-inner">
-                        <h4 className="text-emerald-800 font-bold mb-2">Dapatkan Diskon 30%</h4>
-                        <p className="text-sm text-gray-700 mb-3">Gunakan kode referral kamu dan hemat lebih banyak!</p>
-                        <button className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded">
-                            Bagikan
+                        <h4 className="text-emerald-800 font-bold mb-2">Upload barangmu sekarang</h4>
+                        <p className="text-sm text-gray-700 mb-3">Kenalkan barang-barangmu kepada seluruh orang!</p>
+                        <Link href="/upload" className="ml-4">
+                        <button className="flex items-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-lg shadow hover:bg-emerald-700 transition-all">
+                            <img src="/images/upload.svg" className="w-9 h-5 md:w-5" alt="Upload" />
+                            <span className=" sm:inline">Upload Produk</span>
                         </button>
+                    </Link>
                     </div>
+}
                 </aside>
 
                 {/* Main Content */}

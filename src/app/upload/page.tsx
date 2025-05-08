@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 export default function UploadBarang() {
     const [pembuat, setPembuat] = useState('')
+    const [stok, setStok] = useState('')
     const [judul, setJudul] = useState('');
     const [whatsApp, setWhatsApp] = useState('')
     const [harga, setHarga] = useState('');
@@ -45,6 +46,7 @@ export default function UploadBarang() {
           await addDoc(collection(db, 'produk'), {
             pembuat,
             judul,
+            stok,
             whatsApp,
             harga: parseInt(harga),
             kategori,
@@ -95,7 +97,7 @@ export default function UploadBarang() {
                         value={pembuat}
                         onChange={(e) => setPembuat(e.target.value)}
                         className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-                        placeholder="Pak John.."
+                        placeholder="Contoh: Pak John"
                         required
                     />
                 </div>
@@ -125,13 +127,25 @@ export default function UploadBarang() {
                 </div>
 
                 <div>
+                    <label className="block font-medium mb-1">Stok</label>
+                    <input
+                        type="number"
+                        value={stok}
+                        onChange={(e) => setStok(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                        placeholder="29"
+                        required
+                    />
+                </div>
+
+                <div>
                     <label className="block font-medium mb-1">Nomor HP (Whatsapp)</label>
                     <input
                         type="text"
                         value={whatsApp}
                         onChange={(e) => setWhatsApp(e.target.value)}
                         className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-                        placeholder="0812-456-789"
+                        placeholder="0812456789"
                         required
                     />
                 </div>
