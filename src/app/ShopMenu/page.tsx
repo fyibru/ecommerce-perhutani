@@ -350,7 +350,7 @@ export default function ShopMenu() {
 
                     {/* Product List */}
                     <h2 className="font-bold text-black text-3xl pt-5">Baru Dirilis</h2>
-                    <CategoryItem itemName={users} />
+                    <CategoryItem />
                 </main>
             </div>
 
