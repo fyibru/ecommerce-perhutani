@@ -21,7 +21,6 @@ type ProductWithId = {
 }
 
 export default function ProductContent() {
-
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
   const [product, setProduct] = useState<ProductWithId | null>(null)
