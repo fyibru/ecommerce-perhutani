@@ -101,7 +101,7 @@ export default function CategoryItem({ search }: { search?: string }) {
           key={product.id}
           className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 hover:border-emerald-100"
         >
-          <Link href={`/product/${product.id}`} scroll={false}>
+          <Link href={`/ShowItem?id=${product.id}`} scroll={false}>
             <div className="relative aspect-square overflow-hidden">
               <Image
                 src={product.imageUrl || "/images/product-placeholder.jpg"}
@@ -115,7 +115,7 @@ export default function CategoryItem({ search }: { search?: string }) {
           </Link>
 
           <div className="p-3 space-y-1">
-            <Link href={`/product/${product.id}`} scroll={false}>
+            <Link href={`/ShowItem?id=${product.id}`} scroll={false}>
               <h3 className="font-medium text-gray-900 line-clamp-1 hover:text-emerald-600 transition-colors">
                 {product.judul}
               </h3>
