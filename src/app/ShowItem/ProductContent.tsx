@@ -21,6 +21,7 @@ type ProductWithId = {
 }
 
 export default function ProductContent() {
+
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
   const [product, setProduct] = useState<ProductWithId | null>(null)
@@ -139,7 +140,14 @@ export default function ProductContent() {
           {/* Tombol Sticky */}
           <div className="sticky bottom-4 mt-10">
             <Link
-              href={`https://wa.me/${product.whatsApp}`}
+            onClick={() =>{
+              const whatsappMessage = `Saya tertarik membeli produk ${product.judul} dengan harga ${product.harga}.`;
+
+                const message = encodeURIComponent(whatsappMessage);
+                const phoneNumber = `https://wa.me/${product.whatsApp}?text=${message}`;
+                window.open(phoneNumber, "_blank");
+            }}
+            href={"#"}
               target="_blank"
               className="block text-center bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3 rounded-xl transition"
             >
