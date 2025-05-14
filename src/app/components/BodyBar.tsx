@@ -41,12 +41,12 @@ export default function BodyBar() {
 
 const handleGoogleLogin = async () => {
   try {
-    await signInWithPopup(auth, googleProvider)
+    await signInWithRedirect(auth, googleProvider);
     router.push('/ShopMenu')
   } catch (err) {
-    console.error('Google login failed:', err)
+    console.error('Google login failed:', err);
   }
-}
+};
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
