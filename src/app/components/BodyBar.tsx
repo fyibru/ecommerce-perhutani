@@ -43,8 +43,8 @@ export default function BodyBar() {
   // Gunakan signInWithPopup untuk Google login agar lebih aman di perangkat mobile
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log("Google login successful", result.user);
+      const result = await signInWithRedirect(auth, googleProvider);
+      console.log("Google login successful", result);
       router.push('/ShopMenu'); // Redirect ke halaman setelah login berhasil
     } catch (err) {
       console.error('Google login failed:', err);
