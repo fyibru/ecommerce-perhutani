@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, googleProvider } from '@/lib/firebase'
-import { signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
+import { getRedirectResult, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
 
 export default function BodyBar() {
   const router = useRouter()
@@ -12,6 +12,7 @@ export default function BodyBar() {
   const [text, setText] = useState('Perhutani Ecommerce')
   const texts = ['Perhutani Ecommerce', 'Toko Perhutani']
   const [index, setIndex] = useState(0)
+
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((user) => {
@@ -39,14 +40,31 @@ export default function BodyBar() {
     }
   }
 
-const handleGoogleLogin = async () => {
-  try {
-    await signInWithRedirect(auth, googleProvider);
-    router.push('/ShopMenu')
-  } catch (err) {
-    console.error('Google login failed:', err);
-  }
-};
+  // Gunakan signInWithPopup untuk Google login agar lebih aman di perangkat mobile
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("Google login successful", result.user);
+      router.push('/ShopMenu'); // Redirect ke halaman setelah login berhasil
+    } catch (err) {
+      console.error('Google login failed:', err);
+    }
+  };
+
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          console.log("Google login successful", result.user);
+          router.push('/ShopMenu'); // Redirect ke halaman setelah login berhasil
+        }
+      } catch (err) {
+        console.error('Redirect login failed:', err);
+      }
+    };
+    handleRedirectResult();
+  }, [router]);
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
