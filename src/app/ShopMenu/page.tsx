@@ -37,7 +37,7 @@ export default function ShopMenu() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [users, setUsers] = useState<UserData[]>([]);
     const [userProvider, setUserProvider] = useState('');
-      const isDisabled = userProvider !== "password";
+    const isDisabled = userProvider !== "password";
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
