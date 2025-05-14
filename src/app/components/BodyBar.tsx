@@ -41,7 +41,8 @@ export default function BodyBar() {
 
 const handleGoogleLogin = async () => {
   try {
-    await signInWithRedirect(auth, googleProvider)
+    await signInWithPopup(auth, googleProvider)
+    router.push('/ShopMenu')
   } catch (err) {
     console.error('Google login failed:', err)
   }
