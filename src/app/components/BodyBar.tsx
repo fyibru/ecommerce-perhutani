@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, googleProvider } from '@/lib/firebase'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
 
 export default function BodyBar() {
   const router = useRouter()
@@ -39,14 +39,13 @@ export default function BodyBar() {
     }
   }
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider)
-      console.log(result.user)
-    } catch (err) {
-      console.error('Google login failed:', err)
-    }
+const handleGoogleLogin = async () => {
+  try {
+    await signInWithRedirect(auth, googleProvider)
+  } catch (err) {
+    console.error('Google login failed:', err)
   }
+}
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
