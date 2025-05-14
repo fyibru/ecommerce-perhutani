@@ -3,14 +3,14 @@ export default function Body() {
       <div className="h-min bg-white">
         {/* Title Section */}
         <div className="flex w-full h-5/12 items-center justify-center">
-          <h1 className="font-bold text-5xl pt-26 text-black">Kualitas produk kami</h1>
+          <h1 className="font-bold text-3xl md:text-5xl pt-26 text-black">Kualitas produk kami</h1>
         </div>
   
         {/* Cards Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 justify-items-center">
           {/* Card 1 */}
           <div className="relative flex flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-            <div className="group relative cursor-pointer overflow-hidden bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg sm:px-10">
+            <div className="group relative cursor-pointer overflow-hidden bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg sm:px-10 hover:rounded-lg">
               <span className="absolute top-10 z-0 h-20 w-20 rounded-full bg-emerald-500 transition-all duration-300 group-hover:scale-[13]" />
               <div className="relative z-10 mx-auto max-w-md">
                 <span className="grid h-20 w-20 place-items-center rounded-full bg-emerald-500 transition-all duration-300 group-hover:bg-emerald-400">

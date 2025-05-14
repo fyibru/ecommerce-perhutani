@@ -159,7 +159,7 @@ export default function UploadBarang() {
                         required
                     >
                         <option value="">Pilih Kategori</option>
-                        <option value="bibit">Bibit</option>
+                        <option value="benih">Bibit</option>
                         <option value="kayu">Kayu</option>
                         <option value="olahan">Olahan alam</option>
                         <option value="rumah">Rumah Sewa</option>

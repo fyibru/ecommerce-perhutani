@@ -1,172 +1,131 @@
 'use client'
-import { useState, useEffect } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { auth, googleProvider } from '@/lib/firebase'
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 
 export default function BodyBar() {
-    const router = useRouter()
-    const text1 = "Perhutani Ecommerce";
-    const text2 = "Toko Perhutani";
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [text, setText] = useState('Perhutani Ecommerce')
+  const texts = ['Perhutani Ecommerce', 'Toko Perhutani']
+  const [index, setIndex] = useState(0)
 
-    const [displayedText, setDisplayedText] = useState(text1.padEnd(text2.length).split(""));
-    const [step, setStep] = useState(0);
-    const [direction, setDirection] = useState(true); // true = text1 ➝ text2, false = text2 ➝ text1
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged((user) => {
+      if (user) router.push('/ShopMenu')
+    })
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user){
-                router.push('/ShopMenu')
-            }
-        })
-        const from = direction ? text1.padEnd(text2.length) : text2.padEnd(text1.length);
-        const to = direction ? text2.padEnd(text1.length) : text1.padEnd(text2.length);
-        const fromChars = from.split("");
-        const toChars = to.split("");
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % texts.length)
+      setText(texts[(index + 1) % texts.length])
+    }, 3000)
 
-        const interval = setInterval(() => {
-            if (step >= toChars.length) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    setStep(0);
-                    setDirection(!direction);
-                }, 1500); // jeda sebelum ganti arah
-                return;
-            }
+    return () => {
+      unsub()
+      clearInterval(interval)
+    }
+  }, [index])
 
-            const next = [...displayedText];
-            next[step] = toChars[step];
-            setDisplayedText(next);
-            setStep((prev) => prev + 1);
-        }, 120); // kecepatan ganti huruf
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      router.push('/ShopMenu')
+    } catch (err: any) {
+      alert('Login gagal: ' + err.message)
+    }
+  }
 
-        return () => clearInterval(interval);
-    }, [step, direction]);
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider)
+      console.log(result.user)
+    } catch (err) {
+      console.error('Google login failed:', err)
+    }
+  }
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try{
-            await signInWithEmailAndPassword(auth, email, password)
-            router.push('/ShopMenu')
-        } catch(error: any){
-            alert('Login gagal' + error.message)
-        }
-    };
-
-    return (
-        <div className="bg-white w-full h-screen bg-[url('/images/topography.svg')] bg-cover bg-center flex items-center justify-center px-4">
-            <div className="flex flex-col lg:flex-row items-center bg-emerald-300/20 p-4 sm:p-6 md:p-8 rounded-xl shadow-lg gap-6 sm:gap-8 w-full max-w-md sm:max-w-2xl lg:max-w-5xl backdrop-blur-md">
-
-                {/* Text section */}
-                <div className="flex-1 text-center lg:text-left">
-                    <h1 className="text-4xl md:text-6xl font-bold text-emerald-800 tracking-wide">
-                        {displayedText.map((char, idx) => (
-                            <span key={idx} className="inline-block transition-all duration-200">
-                                {char}
-                            </span>
-                        ))}
-                    </h1>
-                    <span className="block text-black font-semibold opacity-80 mt-4 text-base md:text-lg">
-                        menyediakan berbagai jenis kayu dan berbagai produk lainnya
-                    </span>
-                </div>
-
-                {/* Login form section */}
-                <div className="flex-1 bg-gray-800/90 p-6 md:p-8 rounded-xl w-full max-w-md backdrop-blur-md">
-                    <h1 className="text-white font-bold text-2xl pb-7 text-center">
-                        Selamat Datang!
-                    </h1>
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-6">
-                            <label
-                                htmlFor="email"
-                                className="block mb-2 text-sm font-medium text-white"
-                            >
-                                Email address
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
-                                placeholder="namakamu@gmail.com"
-                                required
-                            />
-                        </div>
-                        <div className="mb-6">
-                            <label
-                                htmlFor="password"
-                                className="block mb-2 text-sm font-medium text-white"
-                            >
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-400"
-                                placeholder="•••••••••"
-                                required
-                            />
-                        </div>
-                        <div className="flex justify-between pb-2">
-                            <div>
-                        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" className=""/>
-                        <label htmlFor="vehicle1" className="pl-1 font-thin">Ingat saya</label>
-                        </div>
-                        <h1>Lupa sandi?</h1>
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6"
-                        >
-                            Login
-                        </button>
-                    </form>
-
-                    {/* Divider line */}
-                    <div className="flex items-center my-6">
-                        <div className="flex-grow border-t border-gray-500"></div>
-                        <span className="mx-4 text-gray-400 text-sm">atau</span>
-                        <div className="flex-grow border-t border-gray-500"></div>
-                    </div>
-
-                    {/* Google & Email login buttons */}
-                    <div className="space-y-4">
-                        <button
-                            type="button"
-                            className="w-full bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded flex items-center justify-center gap-3 border border-gray-300"
-                        >
-                            <img
-                                src="/images/google-icon-logo-svgrepo-com.svg"
-                                className="w-6 h-6"
-                            />
-                            <span className="whitespace-nowrap font-normal">
-                                Login dengan Google
-                            </span>
-                        </button>
-
-                        <button
-                            type="button"
-                            className="w-full bg-gray-600 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded flex items-center justify-center gap-3 border border-gray-300"
-                        >
-                            <img
-                                src="/images/facebook-color-svgrepo-com.svg"
-                                className="w-6 h-6"
-                            />
-                            <span className="whitespace-nowrap font-normal">
-                                Login dengan Facebook
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
+      <div className="flex flex-col-reverse lg:flex-row items-center gap-8 w-full max-w-6xl bg-white/50 backdrop-blur-md p-6 md:p-10 rounded-2xl shadow-lg">
+        
+        {/* Text Section */}
+        <div className="flex-1 text-center lg:text-left space-y-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-emerald-800 transition-all duration-500">
+            {text}
+          </h1>
+          <p className="text-gray-700 text-base md:text-lg font-medium">
+            Menyediakan berbagai jenis kayu dan produk unggulan lainnya
+          </p>
         </div>
-    );
+
+        {/* Login Form */}
+        <div className="flex-1 w-full max-w-md bg-gray-900/80 rounded-xl p-6 md:p-8 text-white shadow-xl">
+          <h2 className="text-center text-2xl font-bold mb-6">Selamat Datang!</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="text-sm mb-1 block">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-3 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500"
+                placeholder="namakamu@gmail.com"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="text-sm mb-1 block">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-3 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 transition duration-200 py-2 px-4 rounded-md font-semibold"
+            >
+              Login
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="flex items-center my-6">
+            <div className="flex-grow border-t border-gray-500" />
+            <span className="mx-3 text-gray-400 text-sm">atau</span>
+            <div className="flex-grow border-t border-gray-500" />
+          </div>
+
+          {/* Google Login */}
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full flex items-center justify-center gap-3 py-2 px-4 bg-white text-black rounded-md hover:bg-gray-100 transition font-semibold border"
+          >
+            <img
+              src="/images/google-icon-logo-svgrepo-com.svg"
+              alt="Google"
+              className="w-5 h-5"
+            />
+            Login dengan Google
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }

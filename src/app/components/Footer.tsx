@@ -17,7 +17,7 @@ export default function Footer(){
       <p className="text-base font-bold tracking-wide text-white">Contacts</p>
       <div className="flex">
         <p className="mr-1 text-white">Phone:</p>
-        <a href="tel:850-123-5021" aria-label="Our phone" title="Our phone" className="transition-colors duration-300 text-deep-purple-accent-400 hover:text-deep-purple-800">850-123-5021</a>
+        <a href="tel:850-123-5021" aria-label="Our phone" title="Our phone" className="transition-colors duration-300 text-deep-purple-accent-400 hover:text-deep-purple-800">(62)812-3281-5497</a>
       </div>
       <div className="flex">
         <p className="mr-1 text-white">Email:</p>
