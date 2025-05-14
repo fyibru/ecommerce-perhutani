@@ -49,6 +49,7 @@ export default function ShopMenu() {
     ];
 
     const label = [
+        { title: "Semua", image: "/images/all-svgrepo-com.svg" },
         { title: "Rumah", image: "/images/house.svg" },
         { title: "Olahan", image: "/images/bee.svg" },
         { title: "Kayu", image: "/images/wood.svg" },
@@ -67,12 +68,14 @@ export default function ShopMenu() {
 
     useEffect(() => {
         if (countedChips === 0) {
+            setCategory('all');
+        } else if (countedChips == 1) {
             setCategory('rumah');
-        } else if (countedChips === 1) {
-            setCategory('olahan');
         } else if (countedChips === 2) {
-            setCategory('kayu');
+            setCategory('olahan');
         } else if (countedChips === 3) {
+            setCategory('kayu');
+        } else if (countedChips === 4) {
             setCategory('benih');
         }
     }, [countedChips]);
@@ -235,7 +238,7 @@ export default function ShopMenu() {
       <h4 className="text-emerald-800 font-bold text-lg mb-2">Kelola Produk Kamu</h4>
       <p className="text-sm text-gray-700 mb-4">Kenalkan barang-barangmu kepada seluruh orang!</p>
 
-      <Link href="/upload" className="block">
+      <Link href="/productView" className="block">
         <button
           disabled={isDisabled}
           className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -336,7 +339,7 @@ export default function ShopMenu() {
 
                     {/* Product List */}
                     <h2 className="font-bold text-emerald-900 text-2xl pt-10 pb-7">Jelajahi</h2>
-                    <CategoryItem search={`${pencarian || category}`} />
+                    <CategoryItem search={pencarian ? pencarian.split(" ") : category == "all" ? ["benih", "kayu", "olahan", "rumah"] : [category]} />
                 </main>
             </div>
         </div>

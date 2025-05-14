@@ -18,7 +18,7 @@ type Product = {
   whatsApp?: string;
 };
 
-export default function CategoryItem({ search }: { search?: string }) {
+export default function CategoryItem({ search }: { search?: string | string[]}) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,12 +50,19 @@ export default function CategoryItem({ search }: { search?: string }) {
     }).format(amount);
   };
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = products.filter((product) => {
     if (!search) return true;
-    const searchTerm = search.toLowerCase();
-    return (
-      product.judul.toLowerCase().includes(searchTerm) ||
-      product.kategori.toLowerCase().includes(searchTerm)
+
+    const searchTerms = Array.isArray(search)
+      ? search.map((term) => term.toLowerCase())
+      : [search.toLowerCase()];
+    
+      console.log(searchTerms);
+
+    return searchTerms.some(
+      (term) =>
+        product.judul.toLowerCase().includes(term) ||
+        product.kategori.toLowerCase().includes(term)
     );
   });
 

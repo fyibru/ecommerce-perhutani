@@ -24,6 +24,7 @@ export default function ProductContent() {
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
   const [product, setProduct] = useState<ProductWithId | null>(null)
+  const [harga, setHarga] = useState('')
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
@@ -140,7 +141,7 @@ export default function ProductContent() {
           <div className="sticky bottom-4 mt-10">
             <Link
             onClick={() =>{
-              const whatsappMessage = `Saya tertarik membeli produk ${product.judul} dengan harga ${product.harga}.`;
+              const whatsappMessage = `${product.pembuat}, Saya ingin membeli produk ${product.judul} berjumplah ${quantity} dengan harga RP ${parseInt(String(product.harga * quantity)).toLocaleString("id-ID")}`;
 
                 const message = encodeURIComponent(whatsappMessage);
                 const phoneNumber = `https://wa.me/${product.whatsApp}?text=${message}`;
