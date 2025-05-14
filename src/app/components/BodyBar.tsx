@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, googleProvider } from '@/lib/firebase'
-import { getRedirectResult, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
+import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
+import { getAuth, getRedirectResult, signInWithEmailAndPassword, signInWithRedirect } from 'firebase/auth'
+import { GoogleAuthProvider } from 'firebase/auth/web-extension';
+import firebase from 'firebase/compat/app';
 
 export default function BodyBar() {
   const router = useRouter()
@@ -12,7 +15,6 @@ export default function BodyBar() {
   const [text, setText] = useState('Perhutani Ecommerce')
   const texts = ['Perhutani Ecommerce', 'Toko Perhutani']
   const [index, setIndex] = useState(0)
-
 
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((user) => {
@@ -35,36 +37,25 @@ export default function BodyBar() {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.push('/ShopMenu')
+      console.log("Login sukses")
     } catch (err: any) {
       alert('Login gagal: ' + err.message)
     }
   }
 
-  // Gunakan signInWithPopup untuk Google login agar lebih aman di perangkat mobile
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithRedirect(auth, googleProvider);
-      console.log("Google login successful", result);
-      router.push('/ShopMenu'); // Redirect ke halaman setelah login berhasil
+      const auth = getAuth();
+      const result = await FirebaseAuthentication.signInWithGoogle();
+      const credential = GoogleAuthProvider.credential(
+        result.credential?.idToken
+      )
+      console.log("Redirection untuk Google login dimulai")
+      firebase.auth().signInWithCredential(credential)
     } catch (err) {
-      console.error('Google login failed:', err);
+      console.error('Google login failed:', err)
     }
-  };
-
-  useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          console.log("Google login successful", result.user);
-          router.push('/ShopMenu'); // Redirect ke halaman setelah login berhasil
-        }
-      } catch (err) {
-        console.error('Redirect login failed:', err);
-      }
-    };
-    handleRedirectResult();
-  }, [router]);
+  }
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
