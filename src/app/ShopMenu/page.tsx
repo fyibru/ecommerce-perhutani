@@ -35,7 +35,7 @@ export default function ShopMenu() {
     const [countedChips, setCountedChips] = useState(0);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [users, setUsers] = useState<UserData[]>([]);
+    const [iklan, setIklan] = useState<any[]>([]);
     const [userProvider, setUserProvider] = useState('');
     const isDisabled = userProvider !== "password";
 
@@ -43,9 +43,8 @@ export default function ShopMenu() {
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     const promos = [
-        { title: "Kayu", description: "Produk Kayu Olahan Terbaik", image: "/images/image.png" },
-        { title: "Kayu Sengon", description: "Promo besar-besaran bulan ini.", image: "/images/Sengon.jpg" },
-        { title: "Benih Unggul", description: "Beli 1 gratis 1 untuk benih pilihan.", image: "/images/image.png" },
+        { title: "Kayu", image: "/images/iklan.png" },
+        { title: "Kayu", image: "/images/iklan2.png" },
     ];
 
     const label = [
@@ -98,12 +97,12 @@ export default function ShopMenu() {
         }
 
         const fetchUser = async () => {
-            const querySnapshot = await getDocs(collection(db, "produk"));
-            const usersData: UserData[] = [];
+            const querySnapshot = await getDocs(collection(db, "iklan"));
+            const iklanData: any[] = [];
             querySnapshot.forEach((doc) => {
-                usersData.push(doc.data() as UserData);
+                iklanData.push(doc.data() as any);
             });
-            setUsers(usersData);
+            setIklan(iklanData);
 
         };
 
@@ -260,8 +259,8 @@ export default function ShopMenu() {
                 </aside>
 
                 {/* Main Content */}
-                <main className="flex-1 container mx-auto px-4">
-                    <section className="bg-emerald-100 py-10 px-4 rounded-lg mb-6">
+                <main className="flex-1 container mx-auto px-1">
+                    <section className="py-5 px-4 rounded-lg mb-6">
                         <div className="max-w-4xl mx-auto swiper-container">
                             <Swiper
                                 modules={[Navigation, Pagination, Autoplay]}
@@ -283,20 +282,15 @@ export default function ShopMenu() {
                                 loop={true}
                                 className="my-custom-swiper"
                             >
-                                {promos.map((promo, idx) => (
+                                {iklan.map((promo, idx) => (
                                     <SwiperSlide key={idx} className="swiper-slide-custom">
                                         <div className="flex flex-col md:flex-row items-center gap-6 h-full p-4">
                                             <div className="w-full md:w-2/2 flex justify-center">
                                                 <img
                                                     src={promo.image}
                                                     alt={promo.title}
-                                                    className="rounded-lg object-cover max-h-64 md:max-h-96 w-full"
+                                                    className="w-full h-auto rounded-lg object-cover aspect-[11/6]"
                                                 />
-                                            </div>
-                                            <div className="w-full md:w-1/2">
-                                                <h2 className="text-3xl font-bold text-emerald-800">Pilihan Terbaik</h2>
-                                                <h3 className="text-2xl font-bold text-gray-700 mt-2">{promo.title}</h3>
-                                                <p className="mt-2 text-gray-700">{promo.description}</p>
                                             </div>
                                         </div>
                                     </SwiperSlide>
