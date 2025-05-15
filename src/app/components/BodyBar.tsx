@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, googleProvider } from '@/lib/firebase'
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
-import { getAuth, getRedirectResult, signInWithEmailAndPassword, signInWithRedirect } from 'firebase/auth'
+import { getAuth, getRedirectResult, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from 'firebase/auth'
 import { GoogleAuthProvider } from 'firebase/auth/web-extension';
 import firebase from 'firebase/compat/app';
 
@@ -45,10 +45,16 @@ export default function BodyBar() {
 
 const handleGoogleLogin = async () => {
   try {
-    await signInWithRedirect(auth, googleProvider);
-    console.log("Redirection untuk Google login dimulai");
-  } catch (err) {
-    alert("Terjadi masalah saat login: " + err); // Menampilkan error jika ada
+    // Coba login dengan popup (desktop-friendly)
+    await signInWithPopup(auth, googleProvider);
+    console.log("Google login success");
+  } catch (error: any) {
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+      // Jika popup gagal (misalnya di mobile browser), fallback ke redirect
+      await signInWithRedirect(auth, googleProvider);
+    } else {
+      console.error("Google login failed:", error);
+    }
   }
 };
 
