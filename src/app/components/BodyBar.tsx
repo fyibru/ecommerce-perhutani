@@ -43,19 +43,30 @@ export default function BodyBar() {
     }
   }
 
-  const handleGoogleLogin = async () => {
+const handleGoogleLogin = async () => {
+  try {
+    await signInWithRedirect(auth, googleProvider);
+    console.log("Redirection untuk Google login dimulai");
+  } catch (err) {
+    alert("Terjadi masalah saat login: " + err); // Menampilkan error jika ada
+  }
+};
+
+useEffect(() => {
+  const handleRedirectResult = async () => {
     try {
-      const auth = getAuth();
-      const result = await FirebaseAuthentication.signInWithGoogle();
-      const credential = GoogleAuthProvider.credential(
-        result.credential?.idToken
-      )
-      console.log("Redirection untuk Google login dimulai")
-      firebase.auth().signInWithCredential(credential)
+      const result = await getRedirectResult(auth);
+      if (result) {
+        console.log("Google login berhasil", result.user);
+        router.push('/ShopMenu');
+      }
     } catch (err) {
-      console.error('Google login failed:', err)
+      alert("Terjadi masalah saat redirect: " + err);
     }
   }
+  handleRedirectResult();
+}, [router]);
+
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
