@@ -3,8 +3,10 @@
 import { addDoc, collection } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function UploadBarang() {
+    const router = useRouter();
     const [pembuat, setPembuat] = useState('')
     const [stok, setStok] = useState('')
     const [judul, setJudul] = useState('');
@@ -57,6 +59,7 @@ export default function UploadBarang() {
           });
       
           alert('Produk berhasil diupload!');
+          router.push('/ShopMenu')
         } catch (err) {
           console.error(err);
           alert('Terjadi kesalahan saat upload produk.');

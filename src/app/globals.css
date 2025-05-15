@@ -32,12 +32,3 @@ body {
   font-size: small;
   src: url('/public/fonts/Poppins-Regular.ttf') format('truetype');
 }
-
-.swiper-button-next, 
-.swiper-button-prev {
-  color: #059669; /* Warna emerald-600 */
-}
-
-.swiper-pagination-bullet-active {
-  background-color: #059669; /* Warna emerald-600 */
-}

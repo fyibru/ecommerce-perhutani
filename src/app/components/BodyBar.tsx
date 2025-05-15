@@ -43,41 +43,41 @@ export default function BodyBar() {
     }
   }
 
-const handleGoogleLogin = async () => {
-  try {
-    // Coba login dengan popup (desktop-friendly)
-    await signInWithPopup(auth, googleProvider);
-    console.log("Google login success");
-  } catch (error: any) {
-    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
-      // Jika popup gagal (misalnya di mobile browser), fallback ke redirect
-      await signInWithRedirect(auth, googleProvider);
-    } else {
-      console.error("Google login failed:", error);
-    }
-  }
-};
-
-useEffect(() => {
-  const handleRedirectResult = async () => {
+  const handleGoogleLogin = async () => {
     try {
-      const result = await getRedirectResult(auth);
-      if (result) {
-        console.log("Google login berhasil", result.user);
-        router.push('/ShopMenu');
+      // Coba login dengan popup (desktop-friendly)
+      await signInWithPopup(auth, googleProvider);
+      console.log("Google login success");
+    } catch (error: any) {
+      if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+        // Jika popup gagal (misalnya di mobile browser), fallback ke redirect
+        await signInWithRedirect(auth, googleProvider);
+      } else {
+        console.error("Google login failed:", error);
       }
-    } catch (err) {
-      alert("Terjadi masalah saat redirect: " + err);
     }
-  }
-  handleRedirectResult();
-}, [router]);
+  };
+
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          console.log("Google login berhasil", result.user);
+          router.push('/ShopMenu');
+        }
+      } catch (err) {
+        alert("Terjadi masalah saat redirect: " + err);
+      }
+    }
+    handleRedirectResult();
+  }, [router]);
 
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center px-4 bg-[url('/images/topography.svg')] bg-cover">
       <div className="flex flex-col-reverse lg:flex-row items-center gap-8 w-full max-w-6xl bg-white/50 backdrop-blur-md p-6 md:p-10 rounded-2xl shadow-lg">
-        
+
         {/* Text Section */}
         <div className="flex-1 text-center lg:text-left space-y-4">
           <h1 className="text-3xl md:text-5xl font-bold text-emerald-800 transition-all duration-500">

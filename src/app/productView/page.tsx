@@ -29,7 +29,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 ></div>
             )}
             <aside
-                className={`h-screen fixed top-0 left-0 w-64 bg-emerald-100 shadow-lg z-50 transform transition-transform duration-300 lg:translate-x-0 lg:static lg:shadow-none
+                className={`h-screen fixed top-0 left-0 w-64 bg-gray-100 shadow-lg z-50 transform transition-transform duration-300 lg:translate-x-0 lg:static lg:shadow-none
         ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
             >
                 <div className="p-4 font-bold text-emerald-700 text-xl">
@@ -55,11 +55,24 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                                 <span className="ms-3">Halaman Utama</span>
                             </a>
                             <a href="#"
-                                className="flex items-center p-2 text-rose-900 rounded-lg hover:bg-rose-400">
-                                <svg className="w-5 h-5 text-rose-700 transition duration-75 group-hover:text-rose-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
+                                className="flex items-center p-2 text-emerald-900 rounded-lg hover:bg-emerald-200">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    className="w-5 h-5 text-emerald-700 transition duration-75 group-hover:text-emerald-900"
+                                >
+                                    <path d="M12 17V7" />
+                                    <path d="M6 11l6-6 6 6" />
+
+                                    <rect x="4" y="17" width="16" height="3" rx="1.5" />
                                 </svg>
-                                <span className="ms-3">Keluar</span>
+
+                                <span className="ms-3">Upload</span>
                             </a>
                         </li>
                         {/* Tambahkan item lainnya sesuai kebutuhan */}

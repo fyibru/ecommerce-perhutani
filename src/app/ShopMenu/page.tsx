@@ -79,16 +79,16 @@ export default function ShopMenu() {
         }
     }, [countedChips]);
 
-    useEffect(() =>{
-        const unsubscribe = onAuthStateChanged(auth, (user) =>{
-            if (user){
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
                 const providers = user.providerData.map((profile) => profile.providerId);
                 setUserProvider(providers[0]);
-            }else{
+            } else {
                 setUserProvider('Anonymous');
             }
         });
-        return ()  => unsubscribe();
+        return () => unsubscribe();
     }, []);
 
     useEffect(() => {
@@ -226,45 +226,45 @@ export default function ShopMenu() {
                         </button>
                     </div>
 
-    <div className="relative bg-emerald-50 p-6 rounded-2xl text-center shadow-lg overflow-hidden">
-      {/* Optional Overlay jika disabled */}
-      {isDisabled && (
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
-          <p className="text-emerald-900 font-semibold">Fitur upload hanya tersedia untuk akun @perhutani.com</p>
-        </div>
-      )}
+                    <div className="relative bg-emerald-50 p-6 rounded-2xl text-center shadow-lg overflow-hidden">
+                        {/* Optional Overlay jika disabled */}
+                        {isDisabled && (
+                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
+                                <p className="text-emerald-900 font-semibold">Fitur upload hanya tersedia untuk akun @perhutani.com</p>
+                            </div>
+                        )}
 
-      <h4 className="text-emerald-800 font-bold text-lg mb-2">Kelola Produk Kamu</h4>
-      <p className="text-sm text-gray-700 mb-4">Kenalkan barang-barangmu kepada seluruh orang!</p>
+                        <h4 className="text-emerald-800 font-bold text-lg mb-2">Kelola Produk Kamu</h4>
+                        <p className="text-sm text-gray-700 mb-4">Kenalkan barang-barangmu kepada seluruh orang!</p>
 
-      <Link href="/productView" className="block">
-        <button
-          disabled={isDisabled}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <span>Lihat Produk</span>
-        </button>
-      </Link>
+                        <Link href="/productView" className="block">
+                            <button
+                                disabled={isDisabled}
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <span>Lihat Produk</span>
+                            </button>
+                        </Link>
 
-      <Link href="/upload" className="block mt-4">
-        <button
-          disabled={isDisabled}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <img src="/images/upload.svg" className="w-5 h-5" alt="Upload" />
-          <span>Upload Produk</span>
-        </button>
-      </Link>
-    </div>
+                        <Link href="/upload" className="block mt-4">
+                            <button
+                                disabled={isDisabled}
+                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <img src="/images/upload.svg" className="w-5 h-5" alt="Upload" />
+                                <span>Upload Produk</span>
+                            </button>
+                        </Link>
+                    </div>
                 </aside>
 
                 {/* Main Content */}
                 <main className="flex-1 container mx-auto px-1">
-                    <section className="py-5 px-4 rounded-lg mb-6">
-                        <div className="max-w-4xl mx-auto swiper-container">
+                    <section className="py-5 px-0 md:px-4 rounded-lg mb-6 w-full overflow-hidden">
+                        <div className="w-full mx-auto swiper-container relative">
                             <Swiper
                                 modules={[Navigation, Pagination, Autoplay]}
-                                spaceBetween={30}
+                                spaceBetween={0}
                                 slidesPerView={1}
                                 navigation={{
                                     nextEl: '.swiper-button-next',
@@ -273,32 +273,47 @@ export default function ShopMenu() {
                                 pagination={{
                                     clickable: true,
                                     el: '.swiper-pagination',
-                                    type: 'bullets',
                                 }}
                                 autoplay={{
-                                    delay: 5000,
-                                    disableOnInteraction: false
+                                    delay: 2000,
+                                    disableOnInteraction: false,
                                 }}
                                 loop={true}
-                                className="my-custom-swiper"
+                                // Pengaturan touch modern (tidak perlu modul terpisah)
+                                touchEventsTarget="container"
+                                allowTouchMove={true}
+                                grabCursor={true}
+                                resistance={true}
+                                resistanceRatio={0.85}
+                                className="my-swiper"
                             >
                                 {iklan.map((promo, idx) => (
-                                    <SwiperSlide key={idx} className="swiper-slide-custom">
-                                        <div className="flex flex-col md:flex-row items-center gap-6 h-full p-4">
-                                            <div className="w-full md:w-2/2 flex justify-center">
-                                                <img
+                                    <SwiperSlide key={idx} className="!w-full">
+                                        <div className="flex flex-col items-center w-full h-full p-0">
+                                            <div className="w-full flex justify-center">
+                                                <Image
                                                     src={promo.image}
                                                     alt={promo.title}
-                                                    className="w-full h-auto rounded-lg object-cover aspect-[11/6]"
+                                                    width={800}
+                                                    height={400}
+                                                    className="w-full h-auto rounded-none md:rounded-lg object-cover aspect-[4/3] md:aspect-[11/6]"
+                                                    loader={({ src }) => `${src}?f_auto,q_auto,w_800`}
                                                 />
                                             </div>
                                         </div>
                                     </SwiperSlide>
                                 ))}
-                                {/* Custom Navigation */}
-                                <div className="swiper-button-prev"></div>
-                                <div className="swiper-button-next"></div>
-                                <div className="swiper-pagination"></div>
+
+                                {/* Custom Navigation Arrows */}
+                                <div className="swiper-button-prev !hidden md:!flex items-center justify-center">
+                                    <span className="arrow-icon"></span>
+                                </div>
+                                <div className="swiper-button-next !hidden md:!flex items-center justify-center">
+                                    <span className="arrow-icon"></span>
+                                </div>
+
+                                {/* Custom Pagination */}
+                                <div className="swiper-pagination !flex justify-center items-center !bottom-2 md:!bottom-4"></div>
                             </Swiper>
                         </div>
                     </section>
@@ -337,7 +352,7 @@ export default function ShopMenu() {
                 </main>
             </div>
         </div>
-        
+
     );
 }
 

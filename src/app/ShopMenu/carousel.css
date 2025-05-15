@@ -1,69 +1,81 @@
-/* Container utama */
-.swiper-container {
-    position: relative;
-    height: 100%;
-    padding-bottom: 40px; /* Ruang untuk pagination */
-  }
-  
-  /* Slide styling */
-  .swiper-slide-custom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.5rem;
-  }
-  
-  /* Navigation buttons */
+.my-swiper {
+  width: 100%;
+  min-height: 200px;
+  touch-action: auto; /* WAS: pan-y */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.swiper-slide img {
+  pointer-events: none; /* hanya jika kamu tidak butuh interaksi di gambar */
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  background: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  content: none;
+}
+
+.arrow-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.swiper-button-next .arrow-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'%3E%3Cpath d='M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z'/%3E%3C/svg%3E");
+}
+
+.swiper-button-prev .arrow-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'%3E%3Cpath d='M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z'/%3E%3C/svg%3E");
+}
+
+.swiper-pagination-bullet {
+  background: rgba(255,255,255,0.6);
+  width: 8px;
+  height: 8px;
+  margin: 0 4px !important;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: #059669;
+  width: 24px;
+  border-radius: 4px;
+}
+
+@media (min-width: 768px) {
   .swiper-button-prev,
   .swiper-button-next {
-    color: #059669; /* emerald-600 */
-    background-color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    opacity: 0.8;
-    transition: opacity 0.3s;
+    width: 48px;
+    height: 48px;
   }
-  
-  .swiper-button-prev:hover,
-  .swiper-button-next:hover {
-    opacity: 1;
+
+  .arrow-icon {
+    width: 24px;
+    height: 24px;
   }
-  
-  .swiper-button-prev::after,
-  .swiper-button-next::after {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  /* Pagination styling */
-  .swiper-pagination {
-    position: absolute;
-    bottom: -5px !important;
-  }
-  
+
   .swiper-pagination-bullet {
-    background-color: #ffffff; /* emerald-200 */
-    opacity: 1;
-    width: 12px;
-    height: 12px;
-    margin: 0 6px !important;
+    width: 10px;
+    height: 10px;
   }
-  
+
   .swiper-pagination-bullet-active {
-    background-color: #059669; /* emerald-600 */
+    width: 32px;
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .swiper-slide-custom {
-      flex-direction: column;
-      padding: 20px;
-    }
-    
-    .swiper-button-prev,
-    .swiper-button-next {
-      display: none;
-    }
-  }
+}
