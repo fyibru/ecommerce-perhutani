@@ -14,7 +14,6 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import './carousel.css';
-import Alert from "../alert/page";
 import { toast } from "react-toastify";
 
 export type UserData = {
