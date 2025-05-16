@@ -38,6 +38,7 @@ export type options = {
 type AllowedUser = {
     email: string;
 };
+
 export default function ShopMenu() {
     const router = useRouter();
     const [pencarian, setPencarian] = useState('');
@@ -268,7 +269,7 @@ export default function ShopMenu() {
 
                     <div className="relative bg-emerald-50 p-6 rounded-2xl text-center shadow-lg overflow-hidden">
                         {/* Optional Overlay jika disabled */}
-                        {stateUser && (
+                        {isDisabled && stateUser && (
                             <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 rounded-2xl flex-1 items-center justify-center pt-3">
                                 <p className="text-emerald-900 font-semibold">Fitur upload hanya tersedia untuk akun @perhutani.com</p>
                                 <button
@@ -284,7 +285,7 @@ export default function ShopMenu() {
 
                         <Link href="/productView" className="block">
                             <button
-                                disabled={stateUser}
+                                disabled={isDisabled && stateUser}
                                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <span>Lihat Produk</span>
@@ -293,7 +294,7 @@ export default function ShopMenu() {
 
                         <Link href="/upload" className="block mt-4">
                             <button
-                                disabled={stateUser}
+                                disabled={isDisabled && stateUser}
                                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <img src="/images/upload.svg" className="w-5 h-5" alt="Upload" />
