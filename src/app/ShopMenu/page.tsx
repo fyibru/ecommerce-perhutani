@@ -14,6 +14,8 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import './carousel.css';
+import Alert from "../alert/page";
+import { toast } from "react-toastify";
 
 export type UserData = {
     createdAt: string;
@@ -28,6 +30,15 @@ export type UserData = {
     whatsApp: string;
 };
 
+export type options = {
+    to: string;
+    subject: string;
+    html: string;
+};
+
+type AllowedUser = {
+    email: string;
+};
 export default function ShopMenu() {
     const router = useRouter();
     const [pencarian, setPencarian] = useState('');
@@ -37,15 +48,12 @@ export default function ShopMenu() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [iklan, setIklan] = useState<any[]>([]);
     const [userProvider, setUserProvider] = useState('');
+    const [allowedUser, setAllowedUser] = useState<AllowedUser[]>([]);
+    const [stateUser, setStateUSer] = useState(false);
     const isDisabled = userProvider !== "password";
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
-
-    const promos = [
-        { title: "Kayu", image: "/images/iklan.png" },
-        { title: "Kayu", image: "/images/iklan2.png" },
-    ];
 
     const label = [
         { title: "Semua", image: "/images/all-svgrepo-com.svg" },
@@ -103,10 +111,23 @@ export default function ShopMenu() {
                 iklanData.push(doc.data() as any);
             });
             setIklan(iklanData);
-
         };
-
         fetchUser();
+
+        const fetchAllowedUser = async () => {
+            const querySnapshot = await getDocs(collection(db, "allowedUser"));
+            const allowedUserData: AllowedUser[] = [];
+            querySnapshot.forEach((doc) => {
+                allowedUserData.push(doc.data() as AllowedUser);
+            });
+            setAllowedUser(allowedUserData);
+
+            const currEmail = auth.currentUser?.email;
+            const isAllowed = allowedUserData.some((user) => user.email == currEmail)
+            setStateUSer(!isAllowed);
+        };
+        fetchAllowedUser();
+
 
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -122,6 +143,26 @@ export default function ShopMenu() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [router]);
+
+    async function handleSendEmail() {
+        const res = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                to: 'workingn6@gmail.com',
+                subject: 'Permohonan akses!',
+                text: `Saya (Nama: ${auth.currentUser?.displayName} Email: ${auth.currentUser?.email}) ingin mengajukan akses Website untuk berjualan`,
+            }),
+        });
+        console.log(res);
+        const result = await res.json();
+        if (result.success) {
+            toast.success("Email permintaan sudah terkirim! mohon tunggu, jika sudah maka tidak ada pemberitahuan. \n- Admin");
+            //alert('Email permintaan sudah terkirim! mohon tunggu, jika sudah maka tidak ada pemberitahuan. \n- Admin');
+        } else {
+            toast.error('Error: ' + result.error);
+        }
+    }
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
@@ -228,18 +269,23 @@ export default function ShopMenu() {
 
                     <div className="relative bg-emerald-50 p-6 rounded-2xl text-center shadow-lg overflow-hidden">
                         {/* Optional Overlay jika disabled */}
-                        {isDisabled && (
-                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 rounded-2xl flex items-center justify-center">
+                        {stateUser && (
+                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 rounded-2xl flex-1 items-center justify-center pt-3">
                                 <p className="text-emerald-900 font-semibold">Fitur upload hanya tersedia untuk akun @perhutani.com</p>
+                                <button
+                                    onClick={() => handleSendEmail()}
+                                    className="w-full flex items-center justify-center gap-2 mt-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <span>Minta akses</span>
+                                </button>
                             </div>
                         )}
-
                         <h4 className="text-emerald-800 font-bold text-lg mb-2">Kelola Produk Kamu</h4>
                         <p className="text-sm text-gray-700 mb-4">Kenalkan barang-barangmu kepada seluruh orang!</p>
 
                         <Link href="/productView" className="block">
                             <button
-                                disabled={isDisabled}
+                                disabled={stateUser}
                                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <span>Lihat Produk</span>
@@ -248,7 +294,7 @@ export default function ShopMenu() {
 
                         <Link href="/upload" className="block mt-4">
                             <button
-                                disabled={isDisabled}
+                                disabled={stateUser}
                                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl shadow-md hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <img src="/images/upload.svg" className="w-5 h-5" alt="Upload" />
@@ -275,7 +321,7 @@ export default function ShopMenu() {
                                     el: '.swiper-pagination',
                                 }}
                                 autoplay={{
-                                    delay: 2000,
+                                    delay: 3000,
                                     disableOnInteraction: false,
                                 }}
                                 loop={true}

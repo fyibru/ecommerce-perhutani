@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import BodyBar from "./components/BodyBar";
 import Footer from "./components/Footer";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
       >
         <link rel="icon" href="/favicon.ico" sizes="any" />
         {children}
+        <ToastContainer position="top-right" autoClose={3000} />
       </body>
     </html>
   );
