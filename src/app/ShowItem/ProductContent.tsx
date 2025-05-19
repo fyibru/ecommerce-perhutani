@@ -88,15 +88,15 @@ export default function ProductContent() {
                     type="number"
                     value={quantity}
                     onChange={(e) => {
-                        const value = parseInt(e.target.value)
-                        const stokVal = product.stok
-                        if (!isNaN(value)){
-                            if (value <= stokVal){
-                                setQuantity(value)
-                            } else {
-                                setQuantity(stokVal)
-                            }
+                      const value = parseInt(e.target.value)
+                      const stokVal = product.stok
+                      if (!isNaN(value)) {
+                        if (value <= stokVal) {
+                          setQuantity(value)
+                        } else {
+                          setQuantity(stokVal)
                         }
+                      }
                     }}
                     className="w-full text-center text-black outline-none"
                     min={1}
@@ -104,7 +104,7 @@ export default function ProductContent() {
                   />
                   <button
                     className="w-10 h-10 bg-gray-700 hover:bg-gray-800 text-lg text-white"
-                    onClick={() => {if (quantity < product.stok) handleQuantity(quantity + 1)}}
+                    onClick={() => { if (quantity < product.stok) handleQuantity(quantity + 1) }}
                   >
                     +
                   </button>
@@ -112,10 +112,11 @@ export default function ProductContent() {
               </div>
 
               <div className="text-xl font-bold text-lime-600">Total: {total}</div>
-
-              <div className="text-sm text-gray-500">
-                Stok: <span className="font-medium">{product.stok}</span>
-              </div>
+              {product.kategori !== "rumah" &&
+                <div className="text-sm text-gray-500">
+                  Stok: <span className="font-medium">{product.stok}</span>
+                </div>
+              }
 
               {product.whatsApp && (
                 <p className="text-sm text-gray-500">
@@ -140,14 +141,14 @@ export default function ProductContent() {
           {/* Tombol Sticky */}
           <div className="sticky bottom-4 mt-10">
             <Link
-            onClick={() =>{
-              const whatsappMessage = `${product.pembuat}, Saya ingin membeli produk ${product.judul} berjumplah ${quantity} dengan harga RP ${parseInt(String(product.harga * quantity)).toLocaleString("id-ID")}`;
+              onClick={() => {
+                const whatsappMessage = `${product.pembuat}, Saya ingin membeli produk ${product.judul} berjumplah ${quantity} dengan harga RP ${parseInt(String(product.harga * quantity)).toLocaleString("id-ID")}`;
 
                 const message = encodeURIComponent(whatsappMessage);
                 const phoneNumber = `https://wa.me/${product.whatsApp}?text=${message}`;
                 window.open(phoneNumber, "_blank");
-            }}
-            href={"#"}
+              }}
+              href={"#"}
               target="_blank"
               className="block text-center bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3 rounded-xl transition"
             >

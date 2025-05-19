@@ -104,7 +104,7 @@ export default function BodyBar() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full px-3 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 border border-gray-600 focus:ring focus:ring-blue-500"
-                placeholder="namakamu@gmail.com"
+                placeholder="name@perhutani.com"
               />
             </div>
 

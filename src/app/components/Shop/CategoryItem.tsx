@@ -18,7 +18,7 @@ type Product = {
   whatsApp?: string;
 };
 
-export default function CategoryItem({ search }: { search?: string | string[]}) {
+export default function CategoryItem({ search }: { search?: string | string[] }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,8 +56,8 @@ export default function CategoryItem({ search }: { search?: string | string[]}) 
     const searchTerms = Array.isArray(search)
       ? search.map((term) => term.toLowerCase())
       : [search.toLowerCase()];
-    
-      console.log(searchTerms);
+
+    console.log(searchTerms);
 
     return searchTerms.some(
       (term) =>
@@ -134,9 +134,16 @@ export default function CategoryItem({ search }: { search?: string | string[]}) 
               {formatPrice(product.harga)}
             </p>
             <div className="flex items-center justify-between mt-2">
-              <span className="text-xs text-gray-400">
-                Stock: {product.stok}
-              </span>
+              {product.kategori !== "rumah" &&
+                <span className="text-xs text-gray-400">
+                  Stock: {product.stok}
+                </span>
+              }
+              {product.kategori === "rumah" &&
+                <span className="text-xs text-gray-400">
+                  Rumah sewa
+                </span>
+              }
               <Link
                 href={`/ShowItem?id=${product.id}`}
                 className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors"

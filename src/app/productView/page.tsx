@@ -210,7 +210,10 @@ export default function LihatProduk() {
                                         <p className="text-emerald-700 font-bold">
                                             Rp {parseInt(item.harga).toLocaleString("id-ID")}
                                         </p>
-                                        <p className="text-xs text-gray-400">Stok: {item.stok}</p>
+                                        {item.kategori && item.kategori !== "rumah" && (
+                                            <p className="text-xs text-gray-400">Stok: {item.stok}</p>
+                                        )
+                                        }
                                         <div className="flex justify-between items-center text-sm mt-3">
                                             <button
                                                 onClick={() => handleDelete(item)}
@@ -267,6 +270,7 @@ export default function LihatProduk() {
                                 className="w-full border rounded p-2"
                                 value={form.stok?.toString() || ""}
                                 onChange={(e) => setForm({ ...form, stok: parseInt(e.target.value) })}
+                                disabled={form.kategori == "rumah"}
                             />
                             <h4>Kategory</h4>
                             <select

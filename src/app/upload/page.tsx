@@ -2,7 +2,7 @@
 
 import { addDoc, collection } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function UploadBarang() {
@@ -17,57 +17,65 @@ export default function UploadBarang() {
     const [kategori, setKategori] = useState('');
     const [deskripsi, setDeskripsi] = useState('');
     const [preview, setPreview] = useState<string | null>(null);
+    const [isRumah, setIsRumah] = useState('')
 
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-      
+
         if (!image) {
-          alert('Silakan pilih gambar terlebih dahulu!');
-          setLoading(false);
-          return;
+            alert('Silakan pilih gambar terlebih dahulu!');
+            setLoading(false);
+            return;
         }
-      
+
         try {
-          const formData = new FormData();
-          formData.append('file', image);
-          formData.append('upload_preset', 'ai_preset'); // pastikan ini benar
-      
-          const res = await fetch('https://api.cloudinary.com/v1_1/ddxpdgmuf/image/upload', {
-            method: 'POST',
-            body: formData,
-          });
-      
-          const data = await res.json();
-          if (!res.ok || !data.secure_url) {
-            throw new Error('Gagal upload ke Cloudinary: ' + JSON.stringify(data));
-          }
-      
-          const imageUrl = data.secure_url;
-      
-          await addDoc(collection(db, 'produk'), {
-            pembuat,
-            judul,
-            stok,
-            whatsApp,
-            harga: parseInt(harga),
-            kategori,
-            deskripsi,
-            imageUrl,
-            uid: auth.currentUser?.uid || 'anon',
-            createdAt: new Date(),
-          });
-      
-          alert('Produk berhasil diupload!');
-          router.push('/ShopMenu')
+            const formData = new FormData();
+            formData.append('file', image);
+            formData.append('upload_preset', 'ai_preset'); // pastikan ini benar
+
+            const res = await fetch('https://api.cloudinary.com/v1_1/ddxpdgmuf/image/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.secure_url) {
+                throw new Error('Gagal upload ke Cloudinary: ' + JSON.stringify(data));
+            }
+
+            const imageUrl = data.secure_url;
+
+            await addDoc(collection(db, 'produk'), {
+                pembuat,
+                judul,
+                stok,
+                whatsApp,
+                harga: parseInt(harga),
+                kategori,
+                deskripsi,
+                imageUrl,
+                uid: auth.currentUser?.uid || 'anon',
+                createdAt: new Date(),
+            });
+
+            alert('Produk berhasil diupload!');
+            router.push('/ShopMenu')
         } catch (err) {
-          console.error(err);
-          alert('Terjadi kesalahan saat upload produk.');
+            console.error(err);
+            alert('Terjadi kesalahan saat upload produk.');
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
-        
+    };
+
+    useEffect(() => {
+        if (kategori == "rumah"){
+            setIsRumah("Rumah tidak memiliki unit!")
+        }else{
+            setIsRumah("1")
+        }
+    })
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -116,6 +124,21 @@ export default function UploadBarang() {
                         required
                     />
                 </div>
+                <div>
+                    <label className="block font-medium mb-1">Kategori</label>
+                    <select
+                        value={kategori}
+                        onChange={(e) => setKategori(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                        required
+                    >
+                        <option value="">Pilih Kategori</option>
+                        <option value="benih">Bibit</option>
+                        <option value="kayu">Kayu</option>
+                        <option value="olahan">Olahan alam</option>
+                        <option value="rumah">Rumah Sewa</option>
+                    </select>
+                </div>
 
                 <div>
                     <label className="block font-medium mb-1">Harga (Rp)</label>
@@ -134,10 +157,13 @@ export default function UploadBarang() {
                     <input
                         type="number"
                         value={stok}
-                        onChange={(e) => setStok(e.target.value)}
+                        onChange={
+                            (e) => setStok(e.target.value)
+                        }
                         className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-                        placeholder="29"
+                        placeholder={isRumah}
                         required
+                        disabled={kategori == "rumah"}
                     />
                 </div>
 
@@ -151,22 +177,6 @@ export default function UploadBarang() {
                         placeholder="62812456789"
                         required
                     />
-                </div>
-
-                <div>
-                    <label className="block font-medium mb-1">Kategori</label>
-                    <select
-                        value={kategori}
-                        onChange={(e) => setKategori(e.target.value)}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-                        required
-                    >
-                        <option value="">Pilih Kategori</option>
-                        <option value="benih">Bibit</option>
-                        <option value="kayu">Kayu</option>
-                        <option value="olahan">Olahan alam</option>
-                        <option value="rumah">Rumah Sewa</option>
-                    </select>
                 </div>
 
                 <div>
