@@ -180,7 +180,7 @@ export default function ProductContent() {
               href="#"
               className="block text-center bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3 rounded-xl transition"
             >
-              Beli Sekarang
+              Konfirmasi produk
             </Link>
           </div>
         </div>
