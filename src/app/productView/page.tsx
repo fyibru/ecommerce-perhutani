@@ -54,7 +54,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                                 </svg>
                                 <span className="ms-3">Halaman Utama</span>
                             </a>
-                            <a href="#"
+                            <a href="/upload"
                                 className="flex items-center p-2 text-emerald-900 rounded-lg hover:bg-emerald-200">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -181,9 +181,8 @@ export default function LihatProduk() {
                     <div className="w-6 h-6" />
                 </div>
 
-                <div className="p-6">
+                <div className="p-6 h-screen">
                     <h1 className="text-3xl font-bold text-emerald-700 mb-6 hidden lg:block">Produk Kamu</h1>
-
                     {produkList.length === 0 ? (
                         <p className="text-gray-500 text-center">Belum ada produk yang diupload.</p>
                     ) : (
