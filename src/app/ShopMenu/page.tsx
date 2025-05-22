@@ -15,6 +15,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import './carousel.css';
 import { toast } from "react-toastify";
+import Footer from "../components/Footer";
 
 export type UserData = {
     createdAt: string;
@@ -397,7 +398,10 @@ export default function ShopMenu() {
                     <CategoryItem search={pencarian ? pencarian.split(" ") : category == "all" ? ["benih", "kayu", "olahan", "rumah"] : [category]} />
                 </main>
             </div>
+            <div className="mb-43"></div>
+            <Footer />
         </div>
+
 
     );
 }
