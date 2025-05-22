@@ -21,7 +21,7 @@ const poppinsFont = Poppins({
   weight: ['400', '700']
 })
 export const metadata: Metadata = {
-  title: "Toko Perhutani",
+  title: "KPH Jatirogo Ecommerce",
   description: "perhutani shop",
   icons: {
     icon: "/favicon.svg",
