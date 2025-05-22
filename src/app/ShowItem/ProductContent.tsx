@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { db } from '@/lib/firebase'
 import { doc, getDoc } from 'firebase/firestore'
-import { it } from 'node:test'
 
 type ProductWithId = {
   id: string
@@ -16,6 +15,7 @@ type ProductWithId = {
   deskripsi?: string
   harga: number
   imageUrl: string
+  otherImageUrls: string[]
   pembuat?: string
   whatsApp?: string
 }
@@ -24,39 +24,47 @@ export default function ProductContent() {
   const searchParams = useSearchParams()
   const id = searchParams.get('id')
   const [product, setProduct] = useState<ProductWithId | null>(null)
-  const [harga, setHarga] = useState('')
+  const [imgUrl, setImgUrl] = useState<[]>([])
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
-    if (!id) return
-    const fetchProduct = async () => {
-      const ref = doc(db, 'produk', id)
-      const snap = await getDoc(ref)
-      if (snap.exists()) {
-        setProduct({ id: snap.id, ...snap.data() } as ProductWithId)
-      } else {
-        console.warn('Produk tidak ditemukan')
+    const fetchProduk = async () => {
+      if (!id) return
+      const docRef = doc(db, 'produk', id)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+
+        setProduct({
+          id: docSnap.id,
+          ...(docSnap.data() as Omit<ProductWithId, 'id'>),
+          otherImageUrls: data.otherImageUrls,
+        })
+        console.log(docSnap, "=>", docSnap.data());
+        setImgUrl(data.otherImageUrls)
       }
     }
-    fetchProduct()
+
+    fetchProduk()
   }, [id])
 
   const handleQuantity = (value: number) => {
     if (value >= 1) setQuantity(value)
   }
 
+  if (!product) {
+    return <div className="p-10 text-center text-gray-500">Memuat produk...</div>
+  }
+
   const total = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
     minimumFractionDigits: 0,
-  }).format((product?.harga || 0) * quantity)
-
-  if (!product) return <div className="p-10 text-center text-gray-500">Memuat produk...</div>
+  }).format(product.harga * quantity)
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-10">
       <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl grid md:grid-cols-2 gap-10 p-6 md:p-10">
-        {/* Gambar Produk */}
         <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden">
           <Image
             src={product.imageUrl}
@@ -68,11 +76,35 @@ export default function ProductContent() {
           />
         </div>
 
-        {/* Detail Produk */}
         <div className="flex flex-col justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{product.judul}</h1>
             <p className="text-gray-600 text-sm mb-2">by {product.pembuat}</p>
+            {/* Bagian yang diperbaiki untuk menampilkan gambar tambahan */}
+            {imgUrl?.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-gray-700 text-lg font-semibold mb-3 md:mb-4">Gambar Lainnya</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  {imgUrl.map((dataUrl, id) => (
+                    <div
+                      key={id}
+                      className="aspect-square relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <Link href={dataUrl}>
+                        <Image
+                          src={dataUrl}
+                          alt={`Gambar produk ${id + 1}`}
+                          fill
+                          className="object-cover hover:scale-105 transition-transform duration-200"
+                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                          quality={85}
+                        />
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="mt-6 space-y-4">
               <div className="flex items-center justify-between">
@@ -89,13 +121,8 @@ export default function ProductContent() {
                     value={quantity}
                     onChange={(e) => {
                       const value = parseInt(e.target.value)
-                      const stokVal = product.stok
                       if (!isNaN(value)) {
-                        if (value <= stokVal) {
-                          setQuantity(value)
-                        } else {
-                          setQuantity(stokVal)
-                        }
+                        setQuantity(Math.min(value, product.stok))
                       }
                     }}
                     className="w-full text-center text-black outline-none"
@@ -104,7 +131,9 @@ export default function ProductContent() {
                   />
                   <button
                     className="w-10 h-10 bg-gray-700 hover:bg-gray-800 text-lg text-white"
-                    onClick={() => { if (quantity < product.stok) handleQuantity(quantity + 1) }}
+                    onClick={() => {
+                      if (quantity < product.stok) handleQuantity(quantity + 1)
+                    }}
                   >
                     +
                   </button>
@@ -112,15 +141,16 @@ export default function ProductContent() {
               </div>
 
               <div className="text-xl font-bold text-lime-600">Total: {total}</div>
-              {product.kategori !== "rumah" &&
+
+              {product.kategori !== 'rumah' && (
                 <div className="text-sm text-gray-500">
                   Stok: <span className="font-medium">{product.stok}</span>
                 </div>
-              }
+              )}
 
               {product.whatsApp && (
                 <p className="text-sm text-gray-500">
-                  WhatsApp:{" "}
+                  WhatsApp:{' '}
                   <Link
                     href={`https://wa.me/${product.whatsApp}`}
                     target="_blank"
@@ -138,23 +168,17 @@ export default function ProductContent() {
             </div>
           </div>
 
-          {/* Tombol Sticky */}
           <div className="sticky bottom-4 mt-10">
             <Link
               onClick={() => {
-                var whatsappMessage: string
-                if (product.kategori == "rumah") {
-                  whatsappMessage = `${product.pembuat}, Saya ingin menyewa properti ${product.judul} dengan harga RP ${parseInt(String(product.harga)).toLocaleString("id-ID")} apakah ini masih tersedia?`;
-                } else {
-                  whatsappMessage = `${product.pembuat}, Saya ingin membeli produk ${product.judul} berjumplah ${quantity} dengan harga RP ${parseInt(String(product.harga * quantity)).toLocaleString("id-ID")}`;
-                }
+                const pesan = product.kategori === 'rumah'
+                  ? `${product.pembuat}, Saya ingin menyewa properti ${product.judul} dengan harga RP ${product.harga.toLocaleString('id-ID')}. Apakah ini masih tersedia?`
+                  : `${product.pembuat}, Saya ingin membeli produk ${product.judul} sejumlah ${quantity} dengan total harga RP ${(product.harga * quantity).toLocaleString('id-ID')}`
 
-                const message = encodeURIComponent(whatsappMessage);
-                const phoneNumber = `https://wa.me/62${product.whatsApp}?text=${message}`;
-                window.open(phoneNumber, "_blank");
+                const message = encodeURIComponent(pesan)
+                window.open(`https://wa.me/62${product.whatsApp}?text=${message}`, '_blank')
               }}
-              href={"#"}
-              target="_blank"
+              href="#"
               className="block text-center bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3 rounded-xl transition"
             >
               Beli Sekarang

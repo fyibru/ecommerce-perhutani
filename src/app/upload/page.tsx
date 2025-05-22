@@ -2,8 +2,9 @@
 
 import { addDoc, collection } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function UploadBarang() {
     const router = useRouter();
@@ -18,6 +19,9 @@ export default function UploadBarang() {
     const [deskripsi, setDeskripsi] = useState('');
     const [preview, setPreview] = useState<string | null>(null);
     const [isRumah, setIsRumah] = useState('')
+    const [otherPreview, setOtherPreview] = useState<string[] | null>(null);
+    const [OtherImage, setOtherImage] = useState<File[]>([]);
+    const [limit, setLimit] = useState(0)
 
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,6 +50,25 @@ export default function UploadBarang() {
 
             const imageUrl = data.secure_url;
 
+            // other image
+            var otherImageUrls: string[] = [];
+            for (const file of OtherImage) {
+                formData.append('file', file);
+                formData.append('upload_preset', 'ai_preset');
+                const res = await fetch('https://api.cloudinary.com/v1_1/ddxpdgmuf/image/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.secure_url) {
+                    throw new Error('Gagal upload ke Cloudinary: ' + JSON.stringify(data));
+                }
+
+                const result = data.secure_url;
+                otherImageUrls.push(result);
+            }
+
             await addDoc(collection(db, 'produk'), {
                 pembuat,
                 judul,
@@ -55,6 +78,7 @@ export default function UploadBarang() {
                 kategori,
                 deskripsi,
                 imageUrl,
+                otherImageUrls,
                 uid: auth.currentUser?.uid || 'anon',
                 createdAt: new Date(),
             });
@@ -75,30 +99,63 @@ export default function UploadBarang() {
         } else {
             setIsRumah("1")
         }
+
+        console.log(otherPreview?.length)
     })
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setImage(file); // ✅ penting!
+            setImage(file);
             const reader = new FileReader();
             reader.onload = () => setPreview(reader.result as string);
             reader.readAsDataURL(file);
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        alert(`Produk "${judul}" berhasil disiapkan untuk di-upload.`);
-        // Simpan ke backend bisa ditambahkan di sini
-    };
+    const handleOtherImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files;
+        if (!file) return;
 
+        const fileArray = Array.from(file);
+        setOtherImage((prev) => [...prev, ...fileArray]);
+
+        const readers = fileArray.map((files) => {
+            return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(files);
+            });
+        });
+
+        Promise.all(readers)
+            .then((results) => setOtherPreview((prev) => [...(prev || []), ...results]))
+            .catch((err) => console.error(err));
+
+        console.log(otherPreview);
+    }
+
+    const handleRemoveImage = (index: number) => {
+        setOtherPreview(prev => {
+            // Pastikan prev tidak null
+            if (!prev) return [];
+            return prev.filter((_, i) => i !== index);
+        });
+
+        setOtherImage(prev => {
+            // Type guard untuk otherImage
+            if (!prev) return [];
+            return prev.filter((_, i) => i !== index);
+        });
+
+        setLimit(setOtherPreview?.length)
+    };
     return (
         <div className="max-w-2xl mx-auto px-4 py-8 text-white">
             <h1 className="text-2xl font-bold mb-6">Tambah Produk Baru</h1>
 
             <form
-                onSubmit={handleSubmit}
                 className="bg-white shadow-md rounded-2xl p-6 space-y-5 text-black"
             >
                 <div>
@@ -211,6 +268,49 @@ export default function UploadBarang() {
                         />
                     )}
                 </div>
+
+                <div>
+                    <label className="block font-medium mb-1">Foto Produk lainnya. Max: 5 (<span>
+                        {(otherPreview?.length || 0)}
+                    </span>)</label>
+                    <input
+                        type="file"
+                        disabled={(otherPreview?.length || 0) >= 5}
+                        multiple
+                        accept="image/*"
+                        onChange={handleOtherImageChange}
+                        className="block w-full text-sm text-black file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                    />
+                    <div className='grid grid-cols-2 w-full gap-3'>
+                        {otherPreview?.map((idx, id) => (
+                            <div className='relative'>
+                                <img
+                                    key={id}
+                                    src={idx}
+                                    alt={`preview ${id}`}
+                                    className="mt-3 h-48 object-contain rounded-lg border"
+                                />
+                                <button onClick={() =>
+                                    handleRemoveImage(id)
+                                } className='absolute right-0 bottom-0'>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className={"w-8 h8 p-2 bg-red-500 rounded-full"}
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
 
                 <button
                     type="submit"
