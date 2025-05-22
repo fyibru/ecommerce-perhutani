@@ -142,7 +142,12 @@ export default function ProductContent() {
           <div className="sticky bottom-4 mt-10">
             <Link
               onClick={() => {
-                const whatsappMessage = `${product.pembuat}, Saya ingin membeli produk ${product.judul} berjumplah ${quantity} dengan harga RP ${parseInt(String(product.harga * quantity)).toLocaleString("id-ID")}`;
+                var whatsappMessage: string
+                if (product.kategori == "rumah") {
+                  whatsappMessage = `${product.pembuat}, Saya ingin menyewa properti ${product.judul} dengan harga RP ${parseInt(String(product.harga)).toLocaleString("id-ID")} apakah ini masih tersedia?`;
+                } else {
+                  whatsappMessage = `${product.pembuat}, Saya ingin membeli produk ${product.judul} berjumplah ${quantity} dengan harga RP ${parseInt(String(product.harga * quantity)).toLocaleString("id-ID")}`;
+                }
 
                 const message = encodeURIComponent(whatsappMessage);
                 const phoneNumber = `https://wa.me/${product.whatsApp}?text=${message}`;
