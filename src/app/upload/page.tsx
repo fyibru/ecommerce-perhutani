@@ -151,6 +151,9 @@ export default function UploadBarang() {
 
         setLimit(setOtherPreview?.length)
     };
+
+
+    if (!loading) return LoadingSpinner();
     return (
         <div className="max-w-2xl mx-auto px-4 py-8 text-white">
             <h1 className="text-2xl font-bold mb-6">Tambah Produk Baru</h1>
@@ -323,3 +326,38 @@ export default function UploadBarang() {
         </div>
     );
 }
+
+
+export const LoadingSpinner = () => (
+  <div className="fixed inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center">
+    <div className="flex flex-col items-center">
+      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <p className="mt-4 text-gray-600 font-medium">Memuat...</p>
+    </div>
+  </div>
+);
+
+const optimizeImageUrl = (originalUrl: string, width: number = 800) => {
+  // Jika URL sudah mengandung parameter optimasi
+  if (originalUrl.includes('q_auto') || originalUrl.includes('width=')) {
+    return originalUrl;
+  }
+
+  // Firebase Storage URL pattern
+  if (originalUrl.includes('firebasestorage.googleapis.com')) {
+    const url = new URL(originalUrl);
+    url.searchParams.set('alt', 'media');
+    url.searchParams.set('q', 'auto');
+    url.searchParams.set('width', width.toString());
+    return url.toString();
+  }
+
+  // Cloudinary/Imgix URL pattern
+  if (originalUrl.match(/cloudinary\.com|imgix\.net/)) {
+    return originalUrl.replace(/(\.jpg|\.png)/, (match) => 
+      `,q_auto,f_auto,w_${width}${match}`
+    );
+  }
+
+  return originalUrl; // Fallback ke URL asli
+};

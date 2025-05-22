@@ -91,13 +91,14 @@ export default function ProductContent() {
                       className="aspect-square relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                     >
                       <Link href={dataUrl}>
-                        <Image
+                        <RetryImage
                           src={dataUrl}
                           alt={`Gambar produk ${id + 1}`}
                           fill
                           className="object-cover hover:scale-105 transition-transform duration-200"
                           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                          quality={85}
+                          quality={75}
+                          loading='lazy'
                         />
                       </Link>
                     </div>
@@ -150,13 +151,11 @@ export default function ProductContent() {
 
               {product.whatsApp && (
                 <p className="text-sm text-gray-500">
-                  WhatsApp:{' '}
                   <Link
                     href={`https://wa.me/${product.whatsApp}`}
                     target="_blank"
                     className="text-lime-600 hover:underline"
                   >
-                    {product.whatsApp}
                   </Link>
                 </p>
               )}
@@ -188,4 +187,29 @@ export default function ProductContent() {
       </div>
     </div>
   )
+}
+
+
+const RetryImage = ({ src = '', alt = '', retries = 12, ...props }) => {
+  const [currentSrc, setCurrentSrc] = useState(src);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    if (attempt > 0) {
+      const timer = setTimeout(() => {
+        setCurrentSrc(`${src}?retry=${attempt}`); // Cache buster
+      }, 1000 * attempt); // Linear backoff (1s, 2s, 3s)
+      
+      return () => clearTimeout(timer);
+    }
+  }, [attempt, src]);
+
+  return (
+    <Image
+      src={currentSrc}
+      alt={alt}
+      onError={() => attempt < retries && setAttempt(a => a + 1)}
+      {...props}
+    />
+  );
 }
