@@ -189,7 +189,6 @@ export default function ProductContent() {
   )
 }
 
-
 const RetryImage = ({ src = '', alt = '', retries = 12, ...props }) => {
   const [currentSrc, setCurrentSrc] = useState(src);
   const [attempt, setAttempt] = useState(0);
