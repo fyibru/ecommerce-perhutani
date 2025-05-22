@@ -70,9 +70,9 @@ export default function UploadBarang() {
     };
 
     useEffect(() => {
-        if (kategori == "rumah"){
+        if (kategori == "rumah") {
             setIsRumah("Rumah tidak memiliki unit!")
-        }else{
+        } else {
             setIsRumah("1")
         }
     })
@@ -169,14 +169,19 @@ export default function UploadBarang() {
 
                 <div>
                     <label className="block font-medium mb-1">Nomor HP (Whatsapp)</label>
-                    <input
-                        type="text"
-                        value={whatsApp}
-                        onChange={(e) => setWhatsApp(e.target.value)}
-                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-                        placeholder="62812456789"
-                        required
-                    />
+                    <div className='flex gap-2'>
+                        <div className='border border-gray-300 rounded-xl px-4 py-2 focus:outline-none'>
+                            +62
+                        </div>
+                        <input
+                            type="text"
+                            value={whatsApp}
+                            onChange={(e) => setWhatsApp(e.target.value)}
+                            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
+                            placeholder="812456789"
+                            required
+                        />
+                    </div>
                 </div>
 
                 <div>
