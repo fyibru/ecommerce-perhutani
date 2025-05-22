@@ -150,7 +150,7 @@ export default function ProductContent() {
                 }
 
                 const message = encodeURIComponent(whatsappMessage);
-                const phoneNumber = `https://wa.me/${product.whatsApp}?text=${message}`;
+                const phoneNumber = `https://wa.me/62${product.whatsApp}?text=${message}`;
                 window.open(phoneNumber, "_blank");
               }}
               href={"#"}
